@@ -39,8 +39,6 @@ Will be installed automatically:
 - fzf-tab
 
 Need to install manually:
-
-- nvm (Node.js version manager)
 - eza
 - fzf
 - bat

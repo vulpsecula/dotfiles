@@ -21,9 +21,6 @@ path=(
   # Editor tooling
   "$HOME/.local/share/nvim/mason/bin"
 
-  # Apps
-  "$HOME/.antigravity/antigravity/bin"
-
   $path
 )
 

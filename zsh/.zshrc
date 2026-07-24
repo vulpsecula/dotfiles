@@ -124,3 +124,6 @@ eval "$(zoxide init --cmd=cd zsh)"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
+
+# Added by Antigravity IDE
+export PATH="/Users/zeke/.antigravity-ide/antigravity-ide/bin:$PATH"

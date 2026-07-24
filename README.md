@@ -92,3 +92,17 @@ git clone --branch v2.3.0 --depth 1 https://github.com/catppuccin/tmux.git \
 
 stow tmux
 ```
+
+After starting tmux, manage TPM plugins with the configured `Ctrl-a` prefix:
+
+- `Ctrl-a I` installs missing plugins.
+- `Ctrl-a U` updates installed plugins.
+- `Ctrl-a Alt-u` removes plugins no longer declared in `.tmux.conf`.
+
+The equivalent commands are useful during non-interactive VPS setup:
+
+```bash
+~/.tmux/plugins/tpm/bin/install_plugins
+~/.tmux/plugins/tpm/bin/update_plugins all
+~/.tmux/plugins/tpm/bin/clean_plugins
+```

@@ -84,5 +84,11 @@ sudo ln -sfn $HOMEBREW_PREFIX/opt/openjdk/libexec/openjdk.jdk /Library/Java/Java
 ```bash
 # install TPM
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# install Catppuccin manually to avoid TPM plugin name conflicts
+mkdir -p ~/.config/tmux/plugins/catppuccin
+git clone --branch v2.3.0 --depth 1 https://github.com/catppuccin/tmux.git \
+  ~/.config/tmux/plugins/catppuccin/tmux
+
 stow tmux
 ```

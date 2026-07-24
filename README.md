@@ -5,13 +5,13 @@
 You may need to backup your original dotfiles before the installation.
 
 ```bash
-# Install Homebrew first (if not already installed)
+# Install Homebrew first
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# Using stow to sync dotfiles
-brew install stow
-# Clone
+# Clone the repository to home directory
 git clone https://github.com/Dzx1025/dotfiles.git
-# Run stow commands at the git root dir
+# Optional, you may choose other package manger
+brew bundle
+# choose the configuration you want to install
 cd dotfiles
 ```
 
@@ -29,21 +29,55 @@ stow neovim
 stow zsh
 ```
 
-Will be installed automatically:
+Installed automatically by the zsh configuration:
 
 - zinit
-- powerlevel10k (MesloLGS Nerd Font Mono)
-- zsh-syntax-highlighting
+- powerlevel10k
 - zsh-completions
-- zsh-autosuggestions
 - fzf-tab
+- zsh-autosuggestions
+- zsh-syntax-highlighting
 
-Need to install manually:
-- eza
+Installed by `brew bundle`:
+
+Required by shell startup:
+
 - fzf
-- bat
 - zoxide
-- MesloLGS Nerd Font Mono (required for Powerlevel10k prompt rendering)
+
+Shell enhancements:
+
+- eza
+- fd
+
+Dev tools:
+
+- awscli
+- openjdk
+- pnpm
+
+Prompt font:
+
+- MesloLG Nerd Font
+
+Register Homebrew OpenJDK with the macOS Java wrappers after its first install:
+
+```bash
+sudo ln -sfn $HOMEBREW_PREFIX/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+```
+
+### Zsh maintenance
+
+- Zinit plugins follow their upstream default branches. Update them explicitly and
+  then verify the prompt, Tab completion, fzf and zoxide integration:
+
+  ```bash
+  zinit self-update
+  zinit update --parallel
+  ```
+
+- Commands prefixed with a space are excluded from zsh history by
+  `hist_ignore_space`. Use this for commands that temporarily contain  secrets.
 
 ### Tmux
 

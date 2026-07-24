@@ -1,11 +1,11 @@
 # Homebrew
-if [[ ! -x /opt/homebrew/bin/brew ]]; then
-  print -u2 "homebrew: /opt/homebrew/bin/brew is unavailable"
-  return 1
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+  [[ -d /opt/homebrew/opt/openjdk/bin ]] && path=(/opt/homebrew/opt/openjdk/bin $path)
+  export HOMEBREW_AUTO_UPDATE_SECS="86400"
+else
+  print -u2 "homebrew: /opt/homebrew/bin/brew is unavailable; setup skipped"
 fi
-eval "$(/opt/homebrew/bin/brew shellenv zsh)"
-[[ -d /opt/homebrew/opt/openjdk/bin ]] && path=(/opt/homebrew/opt/openjdk/bin $path)
-export HOMEBREW_AUTO_UPDATE_SECS="86400"
 
 # Added by Toolbox App
 [[ -d "$HOME/Library/Application Support/JetBrains/Toolbox/scripts" ]] &&

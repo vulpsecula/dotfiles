@@ -86,20 +86,19 @@ bindkey '^[[B' history-search-forward
 # FZF INTEGRATION
 # =============================================================================
 
-if (( ! $+commands[fzf] )); then
-  print -u2 "fzf: command is unavailable"
-  return 1
-fi
+if (( $+commands[fzf] )); then
+  # Use fd for standalone fzf, file/directory selection, and directory changes.
+  if (( $+commands[fd] )); then
+    export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND='fd --strip-cwd-prefix --hidden --follow --exclude .git'
+    export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exclude .git'
+  fi
 
-# Use fd for standalone fzf, file/directory selection, and directory changes.
-if (( $+commands[fd] )); then
-  export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-  export FZF_CTRL_T_COMMAND='fd --strip-cwd-prefix --hidden --follow --exclude .git'
-  export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exclude .git'
+  # Load fzf's Tab widget before fzf-tab so fzf-tab can wrap it.
+  source <(fzf --zsh)
+else
+  print -u2 "fzf: command is unavailable; integration disabled"
 fi
-
-# fzf installs its own Tab widget; load it before fzf-tab so fzf-tab can wrap it.
-source <(fzf --zsh)
 
 # =============================================================================
 # PLUGINS: POST-COMPINIT LOAD AND CONFIGURATION
@@ -112,7 +111,9 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 zinit cdreplay -q
 
 # Completion widget
-zinit light Aloxaf/fzf-tab
+if (( $+commands[fzf] )); then
+  zinit light Aloxaf/fzf-tab
+fi
 
 # Deferred interactive plugins
 zinit ice wait lucid atload"_zsh_autosuggest_start"
@@ -152,16 +153,30 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # fzf theme
 
-# Detect the current desktop theme once while configuring fzf-tab.
+# Detect the current desktop theme once while configuring fzf.
 is-dark-mode() {
-  [[ "$OSTYPE" == darwin* ]] &&
-    defaults read -globalDomain AppleInterfaceStyle &> /dev/null &&
-    return 0
-  [[ "$OSTYPE" == linux* &&
-    "$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)" == *dark* ]] &&
-    return 0
-  [[ "${COLORFGBG:-}" == *dark* ]] &&
-    return 0
+  if [[ "$OSTYPE" == darwin* ]]; then
+    defaults read -globalDomain AppleInterfaceStyle &> /dev/null
+    return
+  fi
+
+  if [[ "$OSTYPE" == linux* ]]; then
+    local scheme
+    scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)"
+    [[ "$scheme" == *prefer-dark* ]] && return 0
+    [[ "$scheme" == *prefer-light* ]] && return 1
+  fi
+
+  if [[ "${COLORFGBG:-}" == *';'* ]]; then
+    local background="${COLORFGBG##*;}"
+    if [[ "$background" == <-> ]] && (( background <= 15 )); then
+      (( background <= 6 || background == 8 )) && return 0
+      return 1
+    fi
+  fi
+
+  # Headless Linux and SSH sessions default to a dark terminal theme.
+  [[ "$OSTYPE" == linux* || -n "${SSH_CONNECTION:-}" ]] && return 0
   return 1
 }
 
@@ -230,8 +245,8 @@ fi
 # DIRECTORY NAVIGATION
 # =============================================================================
 
-if (( ! $+commands[zoxide] )); then
-  print -u2 "zoxide: command is unavailable"
-  return 1
+if (( $+commands[zoxide] )); then
+  eval "$(zoxide init --cmd=cd zsh)"
+else
+  print -u2 "zoxide: command is unavailable; integration disabled"
 fi
-eval "$(zoxide init --cmd=cd zsh)"

@@ -2,6 +2,7 @@
 if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv zsh)"
   [[ -d /opt/homebrew/opt/openjdk/bin ]] && path=(/opt/homebrew/opt/openjdk/bin $path)
+  [[ -d /opt/homebrew/opt/rustup/bin ]] && path=(/opt/homebrew/opt/rustup/bin $path)
   export HOMEBREW_AUTO_UPDATE_SECS="86400"
 else
   print -u2 "homebrew: /opt/homebrew/bin/brew is unavailable; setup skipped"
